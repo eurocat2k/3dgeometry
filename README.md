@@ -1,7 +1,7 @@
 # 3D geometry
  3D geometry in JavaScript
 
-## Vectors
+## Vector
 ![3D coordinate space](img/360px-3D_Spherical_2.svg.png)
 > Figure 1: the 3D space
 
@@ -21,3 +21,13 @@ Our vector is an object which extends standard Array object - derived as [Point]
 - [unit](src/vector/index.js#L8) - unit vector (*see norm*)
 
 --------------------------------------------------------------------
+
+## Segment
+![Segments shortest distance in 3D space](img/result.png)
+> Figure 2: the result of two skew segments distance represented by *ab* segment
+
+### Static method
+
+- [intsect](segment/index.js#L76) - calculates shortest distance between two skew line segment in 3D space.
+
+*Note: line segments must not be parallel and not coplanar - they must be on the same plane.*

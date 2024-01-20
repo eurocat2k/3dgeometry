@@ -10,10 +10,10 @@ import Vector from './vector/index.js'
 import Segment from './segment/index.js'
 const title = '3D segments intersection'
 let version = await getVersion(rootPath);
-let p0 = new Vector(1, 2, 0);
-let p1 = Vector.scale(new Vector(1, 1, -1), 5)
-let q0 = new Vector(0, 3, 1)
-let q1 = Vector.scale(new Vector(2, -1, 3),)
+let p0 = new Vector(2, 3, 2)
+let p1 = new Vector(-3, -1, 1)
+let q0 = new Vector(-4, 2, 3)
+let q1 = new Vector(2, -1, 4)
 
 let len0 = Vector.dist(p0, p1);
 let len1 = Vector.dist(q0, q1)
@@ -29,13 +29,25 @@ let u11 = Vector.unit(q1)
 
 console.log({ u00, u01, u10, u11, mag00, mag01, mag10, mag11, len0, len1, dot0: Vector.dot(p0, p1), dot1: Vector.dot(q0, q1), cross0: Vector.cross(p0, p1), cross1: Vector.cross(q0, q1) })
 
+let v1 = new Vector(-1, 1, 1), v2 = new Vector(1, 1, 2)
+let ll1 = Vector.direction(v1)
+console.log({
+    ll1,
+    phi: (180.0 * ll1.phi) / Math.PI,
+    sigma: (180.0 * ll1.sigma) / Math.PI
+})
+let ll2 = Vector.direction(v2)
+console.log({
+  ll2,
+  phi: (180.0 * ll2.phi) / Math.PI,
+  sigma: (180.0 * ll2.sigma) / Math.PI
+})
+
 let s0 = new Segment(p0, p1)
 let s1 = new Segment(q0, q1)
 
 console.log(Segment.intsect(s0, s1), Segment.segseg(s0, s1))
 
-
-let v1 = new Vector(-1, 1, 1), v2 = new Vector(1, 1, 2)
 console.log({
     v1,
     v2,
@@ -53,18 +65,10 @@ console.log({
     norm0: Vector.norm(v1),
     norm2: Vector.norm(v2),
     dir1: Vector.direction(v1),
-    dir2: Vector.direction(v2)
-})
-
-let ll1 = Vector.direction(v1)
-console.log({
-    ll1,
-    phi: (180.0 * ll1.phi) / Math.PI,
-    sigma: (180.0 * ll1.sigma) / Math.PI
-})
-let ll2 = Vector.direction(v2)
-console.log({
-  ll2,
-  phi: (180.0 * ll2.phi) / Math.PI,
-  sigma: (180.0 * ll2.sigma) / Math.PI
+    dir2: Vector.direction(v2),
+    seg0: s0,
+    seg1: s1,
+    segdist: Segment.distance(s0, s1),
+    intsect: Segment.intsect(s0, s1),
+    intsec2: Segment.intsect2(s0, s1)
 })
