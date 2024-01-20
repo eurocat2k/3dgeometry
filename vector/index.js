@@ -4,6 +4,7 @@ class Vector extends Point {
     constructor(x = 0, y = 0, z = 0) {
         super(x, y, z)
     }
+    // or normalize
     static unit(p0) {
         if (!!p0 && p0 instanceof Vector) {
             return new Vector(
@@ -14,7 +15,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // magnitude
     static mag(p0) {
         if (!!p0 && p0 instanceof Vector) {
             return Math.sqrt(
@@ -25,7 +26,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // scale: multiply or divide by scalar
     static scale(p0, k = 1) {
         if (!!p0 && p0 instanceof Vector && !isNaN(k)) {
             return new Vector(
@@ -36,7 +37,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // addition: vector - vector or a kind of scaler
     static add(p0, p1) {
         if (!!p0 && !!p1 && p0 instanceof Vector && p1 instanceof Vector) {
             return new Vector(
@@ -53,7 +54,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // subtraction: vector - vector or a scaler see above
     static sub(p0, p1) {
         if (!!p0 && !!p1 && p0 instanceof Vector && p1 instanceof Vector) {
             return new Vector(
@@ -70,7 +71,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // normalize - unit vector
     static norm(p0) {
         if (!!p0 && p0 instanceof Vector) {
             let m = Vector.mag(p0)
@@ -84,7 +85,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // find direction
     static direction(p0) {
         if (!!p0 && p0 instanceof Vector) {
             if (p0[0] == 0 && p0[1] == 0 && p0[2] == 0) return false
@@ -131,7 +132,7 @@ class Vector extends Point {
         }
         return false
     }
-
+    // cross product
     static cross(p0, p1) {
         if (!!p0 && !!p1 && p0 instanceof Vector && p1 instanceof Vector) {
             return new Vector(
@@ -145,14 +146,14 @@ class Vector extends Point {
         }
         return false
     }
-
+    // dot product
     static dot(p0, p1) {
         if (!!p0 && !!p1 && p0 instanceof Vector && p1 instanceof Vector) {
             return ((p0[0] * p1[0]) + (p0[1]*p1[1]) + (p0[2]*p1[2]))
         }
         return false
     }
-
+    // distance
     static dist(p0, p1) {
         if (!!p0 && !!p1 && p0 instanceof Vector && p1 instanceof Vector) {
         return Math.sqrt(
