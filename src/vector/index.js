@@ -1,4 +1,9 @@
 import Point from "../point/index.js"
+import Line from "../line/index.js";
+import { lerp } from "../math/index.js";
+
+const decimals = 15;
+const rotMatrix = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];    // a 3x3 matrix
 
 class Vector extends Point {
     constructor(x = 0, y = 0, z = 0) {
@@ -370,6 +375,127 @@ class Vector extends Point {
         }
 
         return false
+    }
+    // applyToTransformMatrix
+    applyToTransformMatrix(m = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]) {
+        return new Vector(
+            parseFloat(((m[0][0] * this[0]) + (m[1][0] * this[1]) + (m[2][0] * this[2])).toFixed(decimals)),
+            parseFloat(((m[0][1] * this[0]) + (m[1][1] * this[1]) + (m[2][1] * this[2])).toFixed(decimals)),
+            parseFloat(((m[0][2] * this[0]) + (m[1][2] * this[1]) + (m[2][2] * this[2])).toFixed(decimals))
+        );
+    }
+    // rotate
+    /**
+     * @name rotate
+     * @param {Number} axis: 0 = x, 1 = y, 2 = z
+     * @param {Number} angle: 0..359.99999
+     */
+    rotate(axis = 0, angle = 0) {
+        if (!!axis && !!angle) {
+            if ((!isNaN(axis) && axis >= 0 && axis <= 2)) {
+                let ang = (((angle % 360) + 360) % 360);    // oriented angle between 0..360
+                ang = (ang / 180.0) * Math.PI;
+                let sin = Math.sin(ang);
+                let cos = Math.cos(ang);
+
+                return this.applyToTransformMatrix([
+                    // x component
+                    [
+                        (axis === 0 ? 1 : cos).toFixed(decimals),
+                        (axis === 2 ? sin : 0).toFixed(decimals),
+                        (axiz === 1 ? -1 * sin : 0).toFixed(decimals)
+                    ],
+                    // y component
+                    [
+                        (axis === 2 ? -1 * sin : 0).toFixed(decimals),
+                        (axis === 1 ? 1 : cos).toFixed(decimals),
+                        (axis === 0 ? sin : 0).toFixed(decimals)
+                    ],
+                    // z component
+                    [
+                        (axis === 1 ? sin : 0).toFixed(decimals),
+                        (axis === 0 ? 1 : cos).toFixed(decimals),
+                        (axis === 2 ? 1 : cos).toFixed(decimals)
+                    ]
+                ]);
+            }
+        }
+        return this
+    }
+    // rotate around vector
+    /**
+     * @name rotateAroundVector
+     * @param {Vector} v
+     * @param {Number} angle
+     */
+    rotateAroundVector(v = new Vector, angle = 0) {
+        if (!!v && !!angle) {
+            if (v instanceof Vector && !isNaN(angle)) {
+                let ang = (((angle % 360) + 360) % 360);
+                ang = (ang / 180.0) * Math.PI;
+                let n1, n2, n3;
+                n1 = v[0];
+                n2 = v[1];
+                n3 = v[2];
+                let sin, cos;
+                sin = Math.sin(ang);
+                cos = Math.cos(ang);
+                return this.applyToTransformMatrix([
+                    [
+                        (((n1 * n1) * (1 - cos)) + cos),
+                        (((n2 * n1) * (1 - cos)) + (n3 * sin)),
+                        (((n3 * n1) * (1 - cos)) - (n2 * sin))
+                    ],
+                    [
+                        (((n1 * n2) * (1 - cos)) + (n3 * sin)),
+                        (((n2 * n2) * (1 - cos)) + cos),
+                        (((n3 * n2) * (1 - cos)) + (n1 * sin))
+                    ],
+                    [
+                        (((n1 * n3) * (1 - cos)) + (n2 * sin)),
+                        (((n2 * n3) * (1 - cos)) - (n1 * sin)),
+                        (((n3 * n3) * (1 - cos)) + cos)
+                    ]
+                ]);
+            }
+        }
+        return this;
+    }
+    // rotateAroundLine
+    rotateAroundLine(l = new Line, angle = 0) {
+        if (!!l && l instanceof Line && !!angle && !isNaN(angle)) {
+            let n = Vector.norm(l.l);
+            return this.sub(l.l0).rotateAroundVector(n, angle).add(l.l0);
+        }
+        return this;
+    }
+    static rotateAroundLine(l0 = new Vector, l = new Line, angle = 0) {
+        if (!!l0 && l0 instanceof Vector && !!l && l instanceof Line && !!angle && !isNaN(angle)) {
+            let n = Vector.norm(l.l);
+            return l0.sub(l.l0).rotateAroundVector(n, angle).add(l.l0);
+        }
+        return l0;
+    }
+    // lerp3D
+    lerp3D(v = new Vector, t = 1) {
+        if (!!v && v instanceof Vector && !!t && !isNaN(t)) {
+            return new Vector(
+                lerp(this[0], v[0], t),
+                lerp(this[1], v[1], t),
+                lerp(this[2], v[2], t)
+            )
+        }
+        return this;
+    }
+    static lerp3D(v0 = new Vector, v = new Vector, t = 1) {
+        if (!!v0 && v0 instanceof Vector && !!v && v instanceof Vector && !!t && !isNaN(t)) {
+            return new Vector(
+                lerp(v0[0], v[0], t),
+                lerp(v0[1], v[1], t),
+                lerp(v0[2], v[2], t)
+            )
+        }
+        return this;
     }
 }
 //
