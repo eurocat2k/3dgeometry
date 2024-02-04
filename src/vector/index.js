@@ -561,7 +561,7 @@ class Vector extends Point {
                 lerp(v0[2], v[2], t)
             )
         }
-        return this;
+        return v0;
     }
 }
 //
