@@ -17,61 +17,6 @@ class Segment {
             this.p1 = new Vector
         }
     }
-    // // closest distance between two 3D line segments
-    // static distance(s1, s2) {
-    //     if (!!s1 && !!s2 && s1 instanceof Segment && s2 instanceof Segment) {
-    //         let s, t
-    //         //     P1 = p1
-    //         let P1 = s1.p0
-    //         //     P2 = p3
-    //         let P2 = s2.p0
-    //         //     V1 = p2 - p1
-    //         let V1 = Vector.sub(s1.p1, s1.p0)
-    //         //     V2 = p4 - p3
-    //         let V2 = Vector.sub(s2.p1, s2.p0)
-    //         //     V21 = P2 - P1
-    //         let V21 = Vector.sub(P2, P1)
-
-    //         //     v22 = np.dot(V2, V2)
-    //         let v22 = Vector.dot(V2, V2)
-    //         //     v11 = np.dot(V1, V1)
-    //         let v11 = Vector.dot(V1, V1)
-    //         //     v21 = np.dot(V2, V1)
-    //         let v21 = Vector.dot(V2, V1)
-    //         //     v21_1 = np.dot(V21, V1)
-    //         let v21_1 = Vector.dot(V21, V1)
-    //         //     v21_2 = np.dot(V21, V2)
-    //         let v21_2 = Vector.dot(V21, V2)
-    //         //     denom = v21 * v21 - v22 * v11
-    //         let denom = v21 * v21 - v22 * v11
-
-    //         //     if np.isclose(denom, 0.):
-    //         if (denom < Number.EPSILON) {
-    //             //         s = 0.
-    //             s = 0
-    //             //         t = (v11 * s - v21_1) / v21
-    //             t = ((v11 * s) - (v21_1 / v21))
-    //         } else {
-    //             //     else:
-    //             //         s = (v21_2 * v21 - v22 * v21_1) / denom
-    //             s = ((v21_1 * v21) - (v22 * (v21_1 / denom)))
-    //             //         t = (-v21_1 * v21 + v11 * v21_2) / denom
-    //             t = ((-v21_1 * v21) + ((v11 * v21_1) / denom))
-    //         }
-    //         //     s = max(min(s, 1.), 0.)
-    //         s = Math.max(Math.min(s, 1.), .0)
-    //         //     t = max(min(t, 1.), 0.)
-    //         t = Math.max(Math.min(t, 1.), .0)
-
-    //         //     p_a = P1 + s * V1
-    //         let p_a = Vector.add(P1, Vector.scale(V1, s))
-    //         //     p_b = P2 + t * V2
-    //         let p_b = Vector.add(P2, Vector.scale(V2, t))
-    //         //     return p_a, p_b
-    //         return {PA: p_a, PB: p_b, dist: Vector.dist(p_a, p_b)}
-    //     }
-    //     return false
-    // }
     // Paul Bourke's algorithm
     static intsect(s1, s2) {
         //
@@ -145,17 +90,20 @@ class Segment {
         // pb->x = p3.x + *mub * p43.x;
         // pb->y = p3.y + *mub * p43.y;
         // pb->z = p3.z + *mub * p43.z;
+        let PA  = new Vector(
+            (p1[0] + (mua * p21[0])),
+            (p1[1] + (mua * p21[1])),
+            (p1[2] + (mua * p21[2]))
+        )
+        let PB = new Vector(
+            (p3[0] + (mub * p43[0])),
+            (p3[1] + (mub * p43[1])),
+            (p3[2] + (mub * p43[2]))
+        )
         return {
-            PA: new Vector(
-                (p1[0] + (mua * p21[0])),
-                (p1[1] + (mua * p21[1])),
-                (p1[2] + (mua * p21[2]))
-            ),
-            PB: new Vector(
-                (p3[0] + (mub * p43[0])),
-                (p3[1] + (mub * p43[1])),
-                (p3[2] + (mub * p43[2]))
-            )
+            PA,
+            PB,
+            dist: Vector.dist(PA, PB)
         }
     }
 

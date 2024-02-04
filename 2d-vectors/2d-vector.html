@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Point to 2D vector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            min-height: 100dvh;
+            min-width: 100dvw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas {
+            flex: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            width: 100dvw;
+            height: 100dvh;
+            background-color: rgb(83, 83, 146);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+    const point = [0, 0]
+    const G = [0, 0]
+
+    point[0] = 90
+    point[1] = 120
+
+    G[0] = 90
+    G[1] = 120
+
+    console.log({point, G})
+
+    document.onmousemove=(event)=>{
+        point[0]=event.x-offset[0]
+        point[1]=event.y-offset[1]
+        requestAnimationFrame(update)
+    }
+
+    let canvas = document.getElementById('canvas')
+    canvas.width = document.body.offsetWidth
+    canvas.height = document.body.offsetHeight
+    const ctx = canvas.getContext('2d')
+
+    // define canvas center
+    let offset = [
+        Math.round(canvas.width * .5),    // canvas origo goes center
+        Math.round(canvas.height * .5)
+    ]
+    console.log({offset})
+    ctx.translate(offset[0], offset[1])
+    // main app
+    update()
+    //
+
+    // helpers
+    function update() {
+        // clear entire canvas
+        ctx.save()
+        ctx.translate(-offset[0], -offset[1])
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.restore()
+        //
+        drawCoordinateSystem()
+
+        drawDot(point, 'M')
+        // restore initial context: translation
+    }
+
+    function drawArrow(tip, tail = [0,0], color = "white", size = 20) {
+        ctx.save();
+        const { dir, mag } = toPolar(subtract(tip, tail));
+        const v1 = { dir: dir + Math.PI * 0.8, mag: size / 2 };
+        const p1 = toXY(v1);
+        const t1 = add(p1, tip);
+        const v2 = { dir: dir - Math.PI * 0.8, mag: size / 2 };
+        const p2 = toXY(v2);
+        const t2 = add(p2, tip);
+        ctx.beginPath();
+        ctx.moveTo(tail.x, tail.y);
+        ctx.lineTo(tip.x, tip.y);
+        ctx.strokeStyle = color;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(tip.x, tip.y);
+        ctx.lineTo(t1.x, t1.y);
+        ctx.lineTo(t2.x, t2.y);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function drawPoint(loc,size=10,color="white"){
+        ctx.beginPath();
+        ctx.fillStyle=color;
+        ctx.arc(loc[0],loc[1],size/2,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    function drawDot(pos, label) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        ctx.arc(pos[0], pos[1], 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.font = "20px Arial";
+        ctx.textBaseline = "hanging";
+        ctx.textAlign = "center";
+        ctx.fillText(label, pos[0] - 10, pos[1] + 6);
+        ctx.restore();
+    }
+
+    function drawSegment(A, B) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = "yellow";
+        ctx.lineWidth = 2;
+        ctx.moveTo(A[0], A[1]);
+        ctx.lineTo(B[0], B[1]);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawText(text, { x = 10, y = 10 } = {}) {
+        ctx.save();
+        ctx.textBaseline = "hanging";
+        ctx.textAlign = "left";
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.fillText(text, x, y);
+        ctx.restore();
+    }
+
+    function drawCoordinateSystem(){
+        ctx.beginPath();
+        ctx.moveTo(-offset[0],0);
+        ctx.lineTo(canvas.width-offset[0],0);
+        ctx.moveTo(0,-offset[1]);
+        ctx.lineTo(0,canvas.height-offset[1]);
+        ctx.setLineDash([5,4]);
+        ctx.lineWidth=2;
+        ctx.strokeStyle="red";
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    //
+</script>
+</html>

@@ -46,7 +46,7 @@ console.log({
 let s0 = new Segment(p0, p1)
 let s1 = new Segment(q0, q1)
 
-console.log(Segment.intsect(s0, s1), Segment.segseg(s0, s1))
+console.log(Segment.intsect(s0, s1))
 
 console.log({
     v1,
@@ -68,7 +68,6 @@ console.log({
     dir2: Vector.direction(v2),
     seg0: s0,
     seg1: s1,
-    segdist: Segment.distance(s0, s1),
-    intsect: Segment.intsect(s0, s1),
-    intsec2: Segment.intsect2(s0, s1)
+    segdist: Segment.intsect(s0, s1).dist,
+    intsect: Segment.intsect(s0, s1)
 })
