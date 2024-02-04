@@ -1,4 +1,4 @@
-import Vector from "../vector";
+import Vector from "../vector/index.js";
 class Line {
     /**
      * @constructor

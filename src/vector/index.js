@@ -403,7 +403,7 @@ class Vector extends Point {
                     [
                         (axis === 0 ? 1 : cos).toFixed(decimals),
                         (axis === 2 ? sin : 0).toFixed(decimals),
-                        (axiz === 1 ? -1 * sin : 0).toFixed(decimals)
+                        (axis === 1 ? -1 * sin : 0).toFixed(decimals)
                     ],
                     // y component
                     [
@@ -421,6 +421,38 @@ class Vector extends Point {
             }
         }
         return this
+    }
+    static rotate(v0 = new Vector, axis = 0, angle = 0) {
+        if (!!v0 && v0 instanceof Vector && !!axis && !!angle) {
+            if ((!isNaN(axis) && axis >= 0 && axis <= 2)) {
+                let ang = (((angle % 360) + 360) % 360);    // oriented angle between 0..360
+                ang = (ang / 180.0) * Math.PI;
+                let sin = Math.sin(ang);
+                let cos = Math.cos(ang);
+
+                return v0.applyToTransformMatrix([
+                    // x component
+                    [
+                        (axis === 0 ? 1 : cos).toFixed(decimals),
+                        (axis === 2 ? sin : 0).toFixed(decimals),
+                        (axis === 1 ? -1 * sin : 0).toFixed(decimals)
+                    ],
+                    // y component
+                    [
+                        (axis === 2 ? -1 * sin : 0).toFixed(decimals),
+                        (axis === 1 ? 1 : cos).toFixed(decimals),
+                        (axis === 0 ? sin : 0).toFixed(decimals)
+                    ],
+                    // z component
+                    [
+                        (axis === 1 ? sin : 0).toFixed(decimals),
+                        (axis === 0 ? 1 : cos).toFixed(decimals),
+                        (axis === 2 ? 1 : cos).toFixed(decimals)
+                    ]
+                ]);
+            }
+        }
+        return v0
     }
     // rotate around vector
     /**
@@ -460,6 +492,40 @@ class Vector extends Point {
             }
         }
         return this;
+    }
+    static rotateAroundVector(v0 = new Vector, v = new Vector, angle = 0) {
+        if (!!v0 && !!v && !!angle) {
+            if (v0 instanceof Vector && v instanceof Vector && !isNaN(angle)) {
+                let ang = (((angle % 360) + 360) % 360);
+                ang = (ang / 180.0) * Math.PI;
+                let n1, n2, n3;
+                n1 = v[0];
+                n2 = v[1];
+                n3 = v[2];
+                let sin, cos;
+                sin = Math.sin(ang);
+                cos = Math.cos(ang);
+                return v0.applyToTransformMatrix([
+                    [
+                        (((n1 * n1) * (1 - cos)) + cos),
+                        (((n2 * n1) * (1 - cos)) + (n3 * sin)),
+                        (((n3 * n1) * (1 - cos)) - (n2 * sin))
+                    ],
+                    [
+                        (((n1 * n2) * (1 - cos)) + (n3 * sin)),
+                        (((n2 * n2) * (1 - cos)) + cos),
+                        (((n3 * n2) * (1 - cos)) + (n1 * sin))
+                    ],
+                    [
+                        (((n1 * n3) * (1 - cos)) + (n2 * sin)),
+                        (((n2 * n3) * (1 - cos)) - (n1 * sin)),
+                        (((n3 * n3) * (1 - cos)) + cos)
+                    ]
+                ]);
+            }
+            return v0;
+        }
+        return false;
     }
     // rotateAroundLine
     rotateAroundLine(l = new Line, angle = 0) {
